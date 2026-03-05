@@ -23,7 +23,14 @@ RUN apt-get update && \
 # Install pip for Python 3.11
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
 
-# Install Open WebUI
+# Install CPU-only PyTorch FIRST — Ollama handles GPU inference, so Open WebUI
+# only needs PyTorch for lightweight tasks (RAG embeddings, whisper).
+# This avoids pulling ~4 GB of redundant NVIDIA CUDA pip packages.
+RUN pip3 install --no-cache-dir \
+    torch torchvision torchaudio \
+    --index-url https://download.pytorch.org/whl/cpu
+
+# Install Open WebUI (torch requirement already satisfied by CPU build above)
 RUN pip3 install --no-cache-dir open-webui
 
 # Copy startup script
