@@ -39,4 +39,6 @@ RUN chmod +x /start.sh
 
 EXPOSE 8080 11434
 
-CMD ["/start.sh"]
+# Override the ollama/ollama base ENTRYPOINT (which is ["ollama"]) so our
+# startup script runs directly instead of being passed as an ollama sub-command.
+ENTRYPOINT ["/start.sh"]
